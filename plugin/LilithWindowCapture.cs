@@ -6,7 +6,7 @@ using BepInEx.Unity.IL2CPP;
 namespace LilithWindowCapture
 {
     // BepInEx 6 (IL2CPP) 插件入口。
-    [BepInPlugin("com.lilithwindowcapture.mod", "LilithWindowCapture", "1.0.0")]
+    [BepInPlugin("com.lilithwindowcapture.mod", "LilithWindowCapture", Version.Value)]
     [BepInProcess("Lilith.exe")]
     public class LilithWindowCapture : BasePlugin
     {

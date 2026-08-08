@@ -3,6 +3,7 @@
 
 #include "log.h"
 #include "window_controller.h"
+#include "version.h"
 
 // 把 winmm 的全部 180 个导出转发到 winmm_orig.dll
 #include "winmm_exports.h"
@@ -20,7 +21,7 @@ volatile LONG g_stopRequested = 0;
 
 DWORD WINAPI WorkerThread(LPVOID) {
     LogInit(g_logCallback);
-    LogMsg(L"LilithWindowCapture v1.0.0 已加载（日志转发至 BepInEx）");
+    LogMsg(L"LilithWindowCapture v" LILITHWINDOWCAPTURE_VERSION_WSTR L" 已加载（日志转发至 BepInEx）");
 
     WindowController controller;
     WindowControllerAccessor::SetInstance(&controller);
