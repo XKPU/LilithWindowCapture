@@ -8,7 +8,7 @@
 
 桌面宠物窗口在游戏里被创建为 `WS_EX_TOOLWINDOW` 样式，因此不会被窗口采集工具枚举。本 mod 由两部分组成：
 
-- **C++ `winmm.dll` 代理**（`src/`）：转发全部 `winmm` 导出到系统原始的 `winmm_orig.dll`，并在后台 worker 线程里动态切换游戏 Unity 窗口（`UnityWndClass`）的 `WS_EX_TOOLWINDOW` / `WS_EX_APPWINDOW` 样式，实现窗口采集可见性的开/关。同时用 owned-window 技巧隐藏任务栏图标，避免托盘出现多余条目。
+- **C++ `winmm.dll` 代理**（`src/`）：转发全部 `winmm` 导出到系统原始的 `winmm_orig.dll`，并在后台 worker 线程里动态切换游戏 Unity 窗口（`UnityWndClass`）的 `WS_EX_TOOLWINDOW` / `WS_EX_APPWINDOW` 样式，实现窗口采集可见性的开/关。
 - **C# BepInEx 6 (IL2CPP) 插件**（`plugin/`）：注册托盘菜单开关，并通过托管日志回调把 C++ 侧日志转发到 BepInEx。
 
 C# 侧通过 `[DllImport("winmm")]` 调用 C++ 导出的 `LilithWindowCapture_*` 函数完成跨模块通信。

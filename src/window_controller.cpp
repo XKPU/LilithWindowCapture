@@ -1,7 +1,6 @@
 #include "window_controller.h"
 #include "log.h"
 
-#include <objbase.h>
 #include <vector>
 
 namespace lilithwindowcapture {
@@ -81,23 +80,9 @@ HWND FindGameWindow() {
     return best;
 }
 
-WindowController::WindowController() {
-    HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-    comInitialized_ = SUCCEEDED(hr);
-    if (!comInitialized_ && hr != RPC_E_CHANGED_MODE) {
-        LogWarn(L"CoInitializeEx 失败: 0x%08X", hr);
-    }
-}
+WindowController::WindowController() = default;
 
-WindowController::~WindowController() {
-    if (taskbarList_) {
-        taskbarList_->Release();
-        taskbarList_ = nullptr;
-    }
-    if (comInitialized_) {
-        CoUninitialize();
-    }
-}
+WindowController::~WindowController() = default;
 
 bool WindowController::EnsureWindow() {
     if (hwnd_ && IsWindow(hwnd_)) {
@@ -185,21 +170,18 @@ void WindowController::SetCaptureMode(bool enabled) {
 void WindowController::ApplyCaptureMode() {
     LONG_PTR exStyle = GetWindowLongPtrW(hwnd_, GWL_EXSTYLE);
 
-    // 去掉 TOOLWINDOW
+    // 移除 TOOLWINDOW 属性
     exStyle &= ~static_cast<LONG_PTR>(WS_EX_TOOLWINDOW);
 
-    // 显式加 APPWINDOW
+    // 添加 APPWINDOW 属性
     exStyle |= static_cast<LONG_PTR>(WS_EX_APPWINDOW);
 
     SetWindowLongPtrW(hwnd_, GWL_EXSTYLE, exStyle);
 
-    // 强制刷新非客户区让样式生效
+    // 强制刷新非客户区让样式生效。
     SetWindowPos(hwnd_, nullptr, 0, 0, 0, 0,
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
                  SWP_NOACTIVATE | SWP_FRAMECHANGED);
-
-    // AddTab
-    AddTaskbarTab();
 
     LogWindowState(L"捕获模式已应用");
 }
@@ -208,8 +190,6 @@ void WindowController::RestoreOriginalMode() {
     if (!snapshotTaken_) {
         return;
     }
-
-    RemoveTaskbarTab();
 
     SetWindowLongPtrW(hwnd_, GWL_STYLE, originalStyle_);
     SetWindowLongPtrW(hwnd_, GWL_EXSTYLE, originalExStyle_);
@@ -224,54 +204,6 @@ void WindowController::RestoreOriginalMode() {
                  SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
     LogWindowState(L"已还原原始样式");
-}
-
-void WindowController::AddTaskbarTab() {
-    if (!hwnd_ || !IsWindow(hwnd_)) {
-        return;
-    }
-    if (!taskbarList_) {
-        HRESULT hr = CoCreateInstance(CLSID_TaskbarList, nullptr, CLSCTX_INPROC_SERVER,
-                                      IID_ITaskbarList,
-                                      reinterpret_cast<void**>(&taskbarList_));
-        if (FAILED(hr) || !taskbarList_) {
-        LogWarn(L"创建 ITaskbarList 失败: 0x%08X", hr);
-            taskbarList_ = nullptr;
-            return;
-        }
-        hr = taskbarList_->HrInit();
-        if (FAILED(hr)) {
-        LogWarn(L"ITaskbarList::HrInit 失败: 0x%08X", hr);
-        }
-    }
-
-    // 重试机制
-    const int kMaxTries = 20;
-    for (int i = 0; i < kMaxTries; ++i) {
-        HRESULT hr = taskbarList_->AddTab(hwnd_);
-        if (SUCCEEDED(hr)) {
-            return;
-        }
-        Sleep(500);
-    }
-    LogWarn(L"AddTaskbarTab 重试 %d 次仍失败",
-            kMaxTries);
-}
-
-void WindowController::RemoveTaskbarTab() {
-    if (!hwnd_ || !IsWindow(hwnd_) || !taskbarList_) {
-        return;
-    }
-    // 同样重试
-    const int kMaxTries = 10;
-    for (int i = 0; i < kMaxTries; ++i) {
-        HRESULT hr = taskbarList_->DeleteTab(hwnd_);
-        if (SUCCEEDED(hr)) {
-            return;
-        }
-        Sleep(300);
-    }
-    LogWarn(L"RemoveTaskbarTab 重试失败");
 }
 
 void WindowController::Shutdown() {

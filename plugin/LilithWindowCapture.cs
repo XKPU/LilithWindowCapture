@@ -1,5 +1,4 @@
 using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using BepInEx.Unity.IL2CPP;
 
@@ -12,23 +11,9 @@ namespace LilithWindowCapture
     {
         internal static ManualLogSource Logger;
 
-        // 上次窗口采集模式（0=关闭,1=开启）。每次通过托盘切换后写入，供下次启动恢复。
-        internal static ConfigEntry<bool> ConfigLastCaptureMode;
-
-        // 是否在上次退出时记住窗口采集模式，并在下次启动时自动恢复。
-        internal static ConfigEntry<bool> ConfigRestoreLastState;
-
         public override void Load()
         {
             Logger = Log;
-
-            // 由 BepInEx 托管配置文件（BepInEx/config/com.lilithwindowcapture.mod.cfg）。
-            ConfigRestoreLastState = Config.Bind(
-                "General", "RestoreLastState", false,
-                "是否在启动时恢复上次的窗口采集模式。true=按上次状态自动开启/关闭；false=每次启动都从关闭开始。");
-            ConfigLastCaptureMode = Config.Bind(
-                "General", "LastCaptureMode", false,
-                "上一次退出时的窗口采集模式（0=关闭,1=开启）。");
 
             // 将 C++ 代理的日志回调转发到 BepInEx 日志。
             WindowCaptureBridge.RegisterLogCallback(Logger);
@@ -49,24 +34,8 @@ namespace LilithWindowCapture
             TrayIntegration.Init(Logger);
             var trayThread = new System.Threading.Thread(() =>
             {
-                bool restoreApplied = false;
                 while (true)
                 {
-                    // C++ 代理找到游戏窗口后，按需恢复上次状态。
-                    if (!restoreApplied && WindowCaptureBridge.IsReady)
-                    {
-                        if (ConfigRestoreLastState.Value)
-                        {
-                            WindowCaptureBridge.CaptureMode = ConfigLastCaptureMode.Value;
-                            Logger.LogInfo($"[LilithWindowCapture] 已按配置恢复上次窗口采集模式 = {(ConfigLastCaptureMode.Value ? 1 : 0)}");
-                        }
-                        else
-                        {
-                            Logger.LogInfo("[LilithWindowCapture] 未启用恢复上次状态（RestoreLastState=false），保持关闭。");
-                        }
-                        restoreApplied = true;
-                    }
-
                     try { TrayIntegration.TryRegister(); }
                     catch { /* 忽略瞬时错误，下个周期重试 */ }
 

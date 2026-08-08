@@ -29,9 +29,7 @@ namespace LilithWindowCapture
             {
                 bool next = !WindowCaptureBridge.CaptureMode;
                 WindowCaptureBridge.CaptureMode = next;
-                // 持久化当前状态，供下次启动按 RestoreLastState 恢复。
-                LilithWindowCapture.ConfigLastCaptureMode.Value = next;
-                _log?.LogInfo($"[LilithWindowCapture] 切换窗口采集模式 -> {(next ? "开启" : "关闭")}（已写入配置）");
+                _log?.LogInfo($"[LilithWindowCapture] 切换窗口采集模式 -> {(next ? "开启" : "关闭")}");
                 try
                 {
                     ShowSystemTray.instance?.tray?.ShowNotification(

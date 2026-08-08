@@ -1,7 +1,6 @@
 #pragma once
 
 #include <windows.h>
-#include <shobjidl.h>
 
 namespace lilithwindowcapture {
 
@@ -29,13 +28,8 @@ private:
     void RestoreOriginalMode();
     void LogWindowState(const wchar_t* prefix);
 
-    void AddTaskbarTab();
-    void RemoveTaskbarTab();
-
     HWND hwnd_ = nullptr;
     bool captureMode_ = false;
-
-    ITaskbarList* taskbarList_ = nullptr;
 
     // 原始样式快照
     bool snapshotTaken_ = false;
@@ -45,8 +39,6 @@ private:
     COLORREF originalColorKey_ = 0;
     BYTE originalAlpha_ = 255;
     DWORD originalLayeredFlags_ = 0;
-
-    bool comInitialized_ = false;
 };
 
 // 全局单例访问器：供 BepInEx UI 插件跨模块调用（见 dllmain.cpp 中的导出函数）
