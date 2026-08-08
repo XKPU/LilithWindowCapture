@@ -272,6 +272,10 @@ bool WindowController::UpdateThumbnail() {
     return true;
 }
 
+void WindowController::RestoreOriginalMode() {
+    DestroyProxyWindow();
+}
+
 void WindowController::SyncProxyToGame() {
     if (!proxyHwnd_ || !hwnd_ || !IsWindow(proxyHwnd_) || !IsWindow(hwnd_)) {
         return;
