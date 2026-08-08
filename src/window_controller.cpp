@@ -62,7 +62,7 @@ HWND FindGameWindow() {
         return nullptr;
     }
 
-    // 多个候选时取面积最大的（主渲染窗口）
+    // 多个候选时取面积最大的
     HWND best = nullptr;
     long long bestArea = -1;
     for (HWND h : ctx.candidates) {
@@ -185,11 +185,10 @@ void WindowController::SetCaptureMode(bool enabled) {
 void WindowController::ApplyCaptureMode() {
     LONG_PTR exStyle = GetWindowLongPtrW(hwnd_, GWL_EXSTYLE);
 
-    // 核心：去掉 TOOLWINDOW，任意窗口采集工具才能在窗口列表里枚举到它
+    // 去掉 TOOLWINDOW
     exStyle &= ~static_cast<LONG_PTR>(WS_EX_TOOLWINDOW);
 
-    // 显式加 APPWINDOW：Explorer 只为"无 owner 且带 APPWINDOW 的顶层窗口"建任务栏按钮。
-    // 仅去 TOOLWINDOW 实测 AddTab 返回成功但按钮不出现，必须配合 APPWINDOW。
+    // 显式加 APPWINDOW
     exStyle |= static_cast<LONG_PTR>(WS_EX_APPWINDOW);
 
     SetWindowLongPtrW(hwnd_, GWL_EXSTYLE, exStyle);
@@ -199,7 +198,7 @@ void WindowController::ApplyCaptureMode() {
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
                  SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
-    // 强制让 Explorer 在任务栏创建本窗口按钮
+    // AddTab
     AddTaskbarTab();
 
     LogWindowState(L"捕获模式已应用");
@@ -246,8 +245,7 @@ void WindowController::AddTaskbarTab() {
         }
     }
 
-    // Explorer 在窗口/任务栏尚未完全就绪时 AddTab 会失败（hr!=S_OK），
-    // 且刚启动时尤为明显。失败则延时重试，最多约 10 秒，直到成功。
+    // 重试机制
     const int kMaxTries = 20;
     for (int i = 0; i < kMaxTries; ++i) {
         HRESULT hr = taskbarList_->AddTab(hwnd_);
@@ -264,7 +262,7 @@ void WindowController::RemoveTaskbarTab() {
     if (!hwnd_ || !IsWindow(hwnd_) || !taskbarList_) {
         return;
     }
-    // 同样重试，避免关闭时 Explorer 尚未就绪导致按钮残留
+    // 同样重试
     const int kMaxTries = 10;
     for (int i = 0; i < kMaxTries; ++i) {
         HRESULT hr = taskbarList_->DeleteTab(hwnd_);

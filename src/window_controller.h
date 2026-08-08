@@ -29,7 +29,6 @@ private:
     void RestoreOriginalMode();
     void LogWindowState(const wchar_t* prefix);
 
-    // 强制在任务栏加入/移除本窗口按钮（仅 AddTab/DeleteTab）
     void AddTaskbarTab();
     void RemoveTaskbarTab();
 

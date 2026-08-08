@@ -4,12 +4,6 @@ using Il2CppInterop.Runtime.InteropTypes;
 
 namespace LilithWindowCapture
 {
-    // 借鉴 The-NOexistenceN-of-Lilith-Mod-main 的 TrayIntegration：
-    // 不新建托盘，而是复用游戏自己的原生系统托盘（ShowSystemTray.instance.tray），
-    // 在其右键菜单追加一个窗口采集模式开关，并在菜单文字里注明当前模式。
-    // 注意：ISystemTray 无 RemoveItem/改文字 API，故菜单项文字在注册（及托盘重建）时
-    // 按当前模式渲染；切换结果通过日志与托盘气泡反馈。IL2CPP 下插件无法挂载 MonoBehaviour，
-    // 故用后台托管线程周期轮询托盘就绪后注册一次（并防原生菜单重建导致重复注册）。
     internal static class TrayIntegration
     {
         private static ManualLogSource _log;

@@ -4,8 +4,7 @@
 #include "log.h"
 #include "window_controller.h"
 
-// 把 winmm 的全部 180 个导出转发到 winmm_orig.dll（真实系统 DLL 的副本），
-// 这样游戏调用任何原始 winmm API 都不受影响。
+// 把 winmm 的全部 180 个导出转发到 winmm_orig.dll
 #include "winmm_exports.h"
 
 namespace lilithwindowcapture {
@@ -41,14 +40,12 @@ DWORD WINAPI WorkerThread(LPVOID) {
         }
     }
 
-    // 窗口出现后再稳定 1 秒，等游戏自身的 TransparentWindowNew 设置完样式
+    // 窗口出现后再等待 1 秒
     if (controller.EnsureWindow()) {
         Sleep(1000);
         controller.EnsureWindow();
     }
 
-    // 不需要周期性样式校验：开启捕获模式后样式保持稳定，由用户切换时显式应用/还原。
-    // 保持 controller 常驻、Instance 持续有效，使托盘切换能读写真实窗口状态；
     // 直到收到停止信号（进程卸载）才还原样式并清空单例。
     while (!InterlockedCompareExchange(&g_stopRequested, 0, 0)) {
         Sleep(500);
@@ -70,7 +67,6 @@ void Startup(HMODULE self) {
 
 void Cleanup() {
     InterlockedExchange(&g_stopRequested, 1);
-    // 不在 DllMain 里 WaitForSingleObject，避免 loader lock 死锁
     if (g_thread) {
         CloseHandle(g_thread);
         g_thread = nullptr;
@@ -100,7 +96,7 @@ __declspec(dllexport) int LilithWindowCapture_IsReady() {
 // 由 BepInEx 托管插件注册日志回调，把本机日志转发到 BepInEx 日志。
 __declspec(dllexport) void LilithWindowCapture_SetLogCallback(LogCallback callback) {
     g_logCallback = callback;
-    // 关键：把回调同步给 log.cpp 内部的 g_callback，否则 LogMsg 因 g_callback 为空而丢弃日志
+    // 把回调同步给 log.cpp 内部的 g_callback
     LogInit(callback);
 }
 

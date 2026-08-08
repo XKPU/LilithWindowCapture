@@ -6,9 +6,6 @@ using BepInEx.Unity.IL2CPP;
 namespace LilithWindowCapture
 {
     // BepInEx 6 (IL2CPP) 插件入口。
-    // 窗口采集模式的实际逻辑由 C++ 版 winmm.dll 代理承担，相关日志转发到 BepInEx 日志。
-    // IL2CPP 下插件程序集内的 MonoBehaviour 无法作为组件 Add 到 GameObject（无对应 native 类），
-    // 因此不在此处挂任何 MonoBehaviour，避免 Load() 阶段崩溃。
     [BepInPlugin("com.lilithwindowcapture.mod", "LilithWindowCapture", "1.0.0")]
     [BepInProcess("Lilith.exe")]
     public class LilithWindowCapture : BasePlugin
@@ -26,15 +23,14 @@ namespace LilithWindowCapture
             Logger = Log;
 
             // 由 BepInEx 托管配置文件（BepInEx/config/com.lilithwindowcapture.mod.cfg）。
-            // 这些条目会随注释自动生成到 cfg 文件中，用户可直接编辑。
             ConfigRestoreLastState = Config.Bind(
                 "General", "RestoreLastState", false,
                 "是否在启动时恢复上次的窗口采集模式。true=按上次状态自动开启/关闭；false=每次启动都从关闭开始。");
             ConfigLastCaptureMode = Config.Bind(
                 "General", "LastCaptureMode", false,
-                "上一次退出时的窗口采集模式（0=关闭,1=开启）。由插件自动维护，一般无需手动修改。");
+                "上一次退出时的窗口采集模式（0=关闭,1=开启）。");
 
-            // 将 C++ 代理的日志回调转发到 BepInEx 日志（不再写单独的日志文件）。
+            // 将 C++ 代理的日志回调转发到 BepInEx 日志。
             WindowCaptureBridge.RegisterLogCallback(Logger);
 
             Logger.LogInfo("[LilithWindowCapture] 插件已加载。窗口逻辑由 winmm.dll 代理提供。");
@@ -50,14 +46,13 @@ namespace LilithWindowCapture
             }
 
             // 复用游戏原生系统托盘，追加窗口采集开关菜单项。
-            // IL2CPP 下无法挂载 MonoBehaviour，改用后台托管线程周期轮询托盘就绪后注册一次。
             TrayIntegration.Init(Logger);
             var trayThread = new System.Threading.Thread(() =>
             {
                 bool restoreApplied = false;
                 while (true)
                 {
-                    // C++ 代理找到游戏窗口后，按需恢复上次状态（仅需执行一次）。
+                    // C++ 代理找到游戏窗口后，按需恢复上次状态。
                     if (!restoreApplied && WindowCaptureBridge.IsReady)
                     {
                         if (ConfigRestoreLastState.Value)

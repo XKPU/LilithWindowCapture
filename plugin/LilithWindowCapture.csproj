@@ -14,8 +14,7 @@
   </PropertyGroup>
 
   <!--
-    引用全部用 Reference（不复制），指向工程下的 BepInExRef（从游戏目录 BepInEx 复制）。
-    配置对齐参考模组 The-NOexistenceN-of-Lilith-Mod-main/plugin/LilithMod.csproj（已验证可编译）。
+    引用全部用 Reference，指向工程下的 BepInExRef。
   -->
   <ItemGroup>
     <Reference Include="BepInEx.Core">
