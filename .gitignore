@@ -1,25 +1,10 @@
 # Build
-build.ps1
-build/
-mod/
-
-# .NET / C# build artifacts
-**/bin/
-**/obj/
-
-# BepInEx / Il2CppInterop caches and logs
-plugin/BepInExRef/
+obj/
 
 # IDE
 .vs/
 .idea/
 .vscode/
 
-# OS
-Thumbs.db
-Desktop.ini
-
 # Deployed artifacts (never commit the proxy/captured builds)
 winmm.dll
-winmm_orig.dll
-LilithObsMod.dll
