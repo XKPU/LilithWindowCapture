@@ -18,7 +18,7 @@
 - 代理窗口以隐藏状态创建，待缩略图首次注册成功后才显示，避免启动阶段出现未渲染的空白窗口。
 - 显示后的 8 秒内轮询游戏窗口矩形并同步大小（位置始终保持在屏幕外），以适配启动阶段的窗口尺寸变化。
 - 游戏（桌宠）窗口自身的样式完全不动，因此不会触发 Unity 重绘或 SwapChain 崩溃。
-- 日志写入游戏根目录的 `LilithWindowCapture.log`，无需任何外部依赖。
+- 日志仅输出到调试器（`OutputDebugString`），不产生任何本地文件，无需任何外部依赖。
 
 ## 安装
 
@@ -29,7 +29,6 @@
 ```
 <游戏目录>/
 ├── Lilith_Data/
-├── LilithWindowCapture.log
 ├── Lilith.exe
 ├── UnityCrashHandler64.exe
 ├── baselib.dll
@@ -38,7 +37,7 @@
 └── winmm.dll                     ← 本项目的代理
 ```
 
-只需这一个 `winmm.dll`。代理在启动时自动从 `C:\Windows\System32\winmm.dll` 加载真实系统实现并转发原始调用，无需随附任何原版 DLL 副本。启动游戏，代理窗口自动创建，日志写入 `LilithWindowCapture.log`。
+只需这一个 `winmm.dll`。代理在启动时自动从 `C:\Windows\System32\winmm.dll` 加载真实系统实现并转发原始调用，无需随附任何原版 DLL 副本。启动游戏，代理窗口自动创建。
 
 ### 采集方式限制
 
@@ -56,7 +55,7 @@
 
 ### 日志
 
-C++ 侧日志始终写入游戏根目录的 **`LilithWindowCapture.log`**（追加模式，含时间戳），并同时输出到调试器（`OutputDebugString`，可用 DebugView 或 Visual Studio 输出窗口查看）。遇到代理窗口未出现、画面全黑等问题时，优先查看该日志文件。
+日志**只输出到调试器**（`OutputDebugString`），不写入任何本地文件。遇到代理窗口未出现、画面全黑等问题时，用 **DebugView**（以管理员身份运行）或 Visual Studio 的「输出」窗口查看，过滤前缀 `[LilithWindowCapture]`。
 
 ## 构建
 
