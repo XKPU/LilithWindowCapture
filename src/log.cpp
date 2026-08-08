@@ -13,17 +13,10 @@ LogCallback g_callback = nullptr;
 std::mutex g_mutex;
 
 void WriteLine(const wchar_t* level, const wchar_t* text) {
-    // 始终输出到调试器，便于没有 BepInEx 插件时也能在调试器看到。
-    {
-        std::lock_guard<std::mutex> lock(g_mutex);
-        if (g_callback) {
-            g_callback(level, text);
-        }
+    std::lock_guard<std::mutex> lock(g_mutex);
+    if (g_callback) {
+        g_callback(level, text);
     }
-
-    // 同时走 OutputDebugString，便于独立调试。
-    std::wstring dbg = std::wstring(level) + L" " + text + L"\n";
-    OutputDebugStringW(dbg.c_str());
 }
 
 void FormatAndWrite(const wchar_t* level, const wchar_t* fmt, va_list args) {

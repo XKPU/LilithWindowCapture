@@ -5,7 +5,7 @@ using BepInEx.Logging;
 namespace LilithWindowCapture
 {
     // 与本机 winmm.dll 代理通信的桥接层。
-    // winmm.dll 导出了 LilithCapture_SetCaptureMode / GetCaptureMode / IsReady / SetLogCallback，
+    // winmm.dll 导出了 LilithWindowCapture_SetCaptureMode / GetCaptureMode / IsReady / SetLogCallback，
     // 这些函数由 C++ 侧通过窗口样式切换逻辑实现（见 src/dllmain.cpp）。
     internal static class WindowCaptureBridge
     {
@@ -17,24 +17,24 @@ namespace LilithWindowCapture
             [MarshalAs(UnmanagedType.LPWStr)] string level,
             [MarshalAs(UnmanagedType.LPWStr)] string message);
 
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithCapture_SetCaptureMode")]
-        public static extern void LilithCapture_SetCaptureMode(int enable);
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithWindowCapture_SetCaptureMode")]
+        public static extern void LilithWindowCapture_SetCaptureMode(int enable);
 
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithCapture_GetCaptureMode")]
-        public static extern int LilithCapture_GetCaptureMode();
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithWindowCapture_GetCaptureMode")]
+        public static extern int LilithWindowCapture_GetCaptureMode();
 
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithCapture_IsReady")]
-        public static extern int LilithCapture_IsReady();
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithWindowCapture_IsReady")]
+        public static extern int LilithWindowCapture_IsReady();
 
-        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithCapture_SetLogCallback")]
-        public static extern void LilithCapture_SetLogCallback(NativeLogCallback callback);
+        [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithWindowCapture_SetLogCallback")]
+        public static extern void LilithWindowCapture_SetLogCallback(NativeLogCallback callback);
 
         public static bool IsReady => LilithCapture_IsReady() != 0;
 
         public static bool CaptureMode
         {
-            get => LilithCapture_GetCaptureMode() != 0;
-            set => LilithCapture_SetCaptureMode(value ? 1 : 0);
+            get => LilithWindowCapture_GetCaptureMode() != 0;
+            set => LilithWindowCapture_SetCaptureMode(value ? 1 : 0);
         }
 
         // 注册一个稳定的托管回调，把 C++ 日志转发到 BepInEx 日志。
@@ -51,7 +51,7 @@ namespace LilithWindowCapture
                     default: log.LogInfo(message); break;
                 }
             };
-            LilithCapture_SetLogCallback(_logCallback);
+            LilithWindowCapture_SetLogCallback(_logCallback);
         }
     }
 }

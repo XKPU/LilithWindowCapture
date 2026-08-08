@@ -8,7 +8,7 @@ namespace lilithwindowcapture {
 // 定位本进程的 Unity 主渲染窗口
 HWND FindGameWindow();
 
-// 在「桌宠原生模式」和「OBS 捕获模式」之间切换窗口样式
+// 在「桌宠原生模式」和「窗口采集模式」之间切换窗口样式
 class WindowController {
 public:
     WindowController();

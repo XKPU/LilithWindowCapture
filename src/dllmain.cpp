@@ -10,7 +10,7 @@
 
 namespace lilithwindowcapture {
 
-// 日志回调：由 BepInEx 托管插件通过 LilithObs_SetLogCallback 注册。
+// 日志回调：由 BepInEx 托管插件通过 LilithWindowCapture_SetLogCallback 注册。
 LogCallback g_logCallback = nullptr;
 
 namespace {

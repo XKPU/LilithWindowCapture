@@ -6,7 +6,7 @@ using BepInEx.Unity.IL2CPP;
 namespace LilithWindowCapture
 {
     // BepInEx 6 (IL2CPP) 插件入口。
-    // 窗口录制模式的实际逻辑由 C++ 版 winmm.dll 代理承担，相关日志转发到 BepInEx 日志。
+    // 窗口采集模式的实际逻辑由 C++ 版 winmm.dll 代理承担，相关日志转发到 BepInEx 日志。
     // IL2CPP 下插件程序集内的 MonoBehaviour 无法作为组件 Add 到 GameObject（无对应 native 类），
     // 因此不在此处挂任何 MonoBehaviour，避免 Load() 阶段崩溃。
     [BepInPlugin("com.lilithwindowcapture.mod", "LilithWindowCapture", "1.0.0")]
@@ -15,10 +15,10 @@ namespace LilithWindowCapture
     {
         internal static ManualLogSource Logger;
 
-        // 上次窗口录制模式（0=关闭,1=开启）。每次通过托盘切换后写入，供下次启动恢复。
+        // 上次窗口采集模式（0=关闭,1=开启）。每次通过托盘切换后写入，供下次启动恢复。
         internal static ConfigEntry<bool> ConfigLastCaptureMode;
 
-        // 是否在上次退出时记住窗口录制模式，并在下次启动时自动恢复。
+        // 是否在上次退出时记住窗口采集模式，并在下次启动时自动恢复。
         internal static ConfigEntry<bool> ConfigRestoreLastState;
 
         public override void Load()
@@ -29,10 +29,10 @@ namespace LilithWindowCapture
             // 这些条目会随注释自动生成到 cfg 文件中，用户可直接编辑。
             ConfigRestoreLastState = Config.Bind(
                 "General", "RestoreLastState", false,
-                "是否在启动时恢复上次的窗口录制模式。true=按上次状态自动开启/关闭；false=每次启动都从关闭开始。");
+                "是否在启动时恢复上次的窗口采集模式。true=按上次状态自动开启/关闭；false=每次启动都从关闭开始。");
             ConfigLastCaptureMode = Config.Bind(
                 "General", "LastCaptureMode", false,
-                "上一次退出时的窗口录制模式（0=关闭,1=开启）。由插件自动维护，一般无需手动修改。");
+                "上一次退出时的窗口采集模式（0=关闭,1=开启）。由插件自动维护，一般无需手动修改。");
 
             // 将 C++ 代理的日志回调转发到 BepInEx 日志（不再写单独的日志文件）。
             WindowCaptureBridge.RegisterLogCallback(Logger);
@@ -41,15 +41,15 @@ namespace LilithWindowCapture
 
             if (!WindowCaptureBridge.IsReady)
             {
-                Logger.LogWarning("[LilithWindowCapture] winmm.dll 代理未就绪，窗口录制开关可能无效（请确认游戏目录含已部署的 winmm.dll 代理）");
+                Logger.LogWarning("[LilithWindowCapture] winmm.dll 代理未就绪，窗口采集开关可能无效（请确认游戏目录含已部署的 winmm.dll 代理）");
             }
             else
             {
                 bool mode = WindowCaptureBridge.CaptureMode;
-                Logger.LogInfo($"[LilithWindowCapture] winmm 代理就绪，当前窗口录制模式 = {(mode ? 1 : 0)}（0=关闭,1=开启）。通过系统托盘右键菜单切换。");
+                Logger.LogInfo($"[LilithWindowCapture] winmm 代理就绪，当前窗口采集模式 = {(mode ? 1 : 0)}（0=关闭,1=开启）。通过系统托盘右键菜单切换。");
             }
 
-            // 复用游戏原生系统托盘，追加窗口录制开关菜单项。
+            // 复用游戏原生系统托盘，追加窗口采集开关菜单项。
             // IL2CPP 下无法挂载 MonoBehaviour，改用后台托管线程周期轮询托盘就绪后注册一次。
             TrayIntegration.Init(Logger);
             var trayThread = new System.Threading.Thread(() =>
@@ -63,7 +63,7 @@ namespace LilithWindowCapture
                         if (ConfigRestoreLastState.Value)
                         {
                             WindowCaptureBridge.CaptureMode = ConfigLastCaptureMode.Value;
-                            Logger.LogInfo($"[LilithWindowCapture] 已按配置恢复上次窗口录制模式 = {(ConfigLastCaptureMode.Value ? 1 : 0)}");
+                            Logger.LogInfo($"[LilithWindowCapture] 已按配置恢复上次窗口采集模式 = {(ConfigLastCaptureMode.Value ? 1 : 0)}");
                         }
                         else
                         {
@@ -83,7 +83,7 @@ namespace LilithWindowCapture
                 Name = "LilithWindowCaptureTray"
             };
             trayThread.Start();
-            Logger.LogInfo("[LilithWindowCapture] 托盘菜单注入线程已启动（等待游戏系统托盘就绪后追加窗口录制开关）");
+            Logger.LogInfo("[LilithWindowCapture] 托盘菜单注入线程已启动（等待游戏系统托盘就绪后追加窗口采集开关）");
         }
     }
 }
