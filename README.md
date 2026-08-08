@@ -35,4 +35,4 @@ C# 侧通过 `[DllImport("winmm")]` 调用 C++ 导出的 `LilithWindowCapture_*`
 
 兼容其他模组？
 
-对于所有未使用winmm.dll的模组都可以兼容，任意模组使用winmm.dll都会导致冲突，需要兼容请提issues
+对于所有未修改winmm.dll的模组都可以兼容，任意模组修改winmm.dll都会导致冲突，需要兼容请提issues
