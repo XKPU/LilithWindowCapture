@@ -85,8 +85,7 @@ WindowController::WindowController() {
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     comInitialized_ = SUCCEEDED(hr);
     if (!comInitialized_ && hr != RPC_E_CHANGED_MODE) {
-        // 原文：CoInitializeEx 失败
-        LogWarn(L"CoInitializeEx \xE5\xA4\xB1\xE8\xB4\xA5: 0x%08X", hr);
+        LogWarn(L"CoInitializeEx 失败: 0x%08X", hr);
     }
 }
 
@@ -106,8 +105,7 @@ bool WindowController::EnsureWindow() {
     }
 
     if (hwnd_) {
-        // 原文：窗口句柄失效，重新定位...
-    LogMsg(L"\xE7\xAA\x97\xE5\x8F\xA3\xE5\x8F\xA5\xE6\x9F\x84\xE5\xA4\xB1\xE6\x95\x88\xEF\xBC\x8C\xE9\x87\x8D\xE6\x96\xB0\xE5\xAE\x9A\xE4\xBD\x8D...");
+    LogMsg(L"窗口句柄失效，重新定位...");
         snapshotTaken_ = false;
         hwnd_ = nullptr;
     }
@@ -118,8 +116,7 @@ bool WindowController::EnsureWindow() {
     }
 
     hwnd_ = found;
-    // 原文：已定位游戏窗口
-    LogWindowState(L"\xE5\xB7\xB2\xE5\xAE\x9A\xE4\xBD\x8D\xE6\xB8\xB8\xE6\x88\x8F\xE7\xAA\x97\xE5\x8F\xA3");
+    LogWindowState(L"已定位游戏窗口");
 
     // 窗口重建后若之前处于捕获模式，重新应用
     if (captureMode_) {
@@ -146,8 +143,7 @@ void WindowController::TakeSnapshot() {
 
     snapshotTaken_ = true;
 
-    // 原文：样式快照: Style=... ExStyle=... LayeredValid=... ColorKey=... Alpha=... Flags=...
-    LogVerbose(L"\xE6\xA0\xB7\xE5\xBC\x8F\xE5\xBF\xAB\xE7\x85\xA7: Style=0x%08llX ExStyle=0x%08llX "
+    LogVerbose(L"样式快照: Style=0x%08llX ExStyle=0x%08llX "
                L"LayeredValid=%d ColorKey=0x%08X Alpha=%u Flags=0x%X",
                static_cast<unsigned long long>(originalStyle_),
                static_cast<unsigned long long>(originalExStyle_),
@@ -161,8 +157,7 @@ void WindowController::Toggle() {
 
 void WindowController::SetCaptureMode(bool enabled) {
     if (!EnsureWindow()) {
-        // 原文：未找到游戏窗口，无法切换
-        LogWarn(L"\xE6\x9C\xAA\xE6\x89\xBE\xE5\x88\xB0\xE6\xB8\xB8\xE6\x88\x8F\xE7\xAA\x97\xE5\x8F\xA3\xEF\xBC\x8C\xE6\x97\xA0\xE6\xB3\x95\xE5\x88\x87\xE6\x8D%A2");
+        LogWarn(L"未找到游戏窗口，无法切换");
         return;
     }
 
@@ -181,13 +176,9 @@ void WindowController::SetCaptureMode(bool enabled) {
     captureMode_ = enabled;
 
     if (enabled) {
-        // 原文：>>> 窗口采集模式已开启：在任意窗口采集工具中选择 [Lilith.exe]: Lilith
-        LogMsg(L">>> \xE7\xAA\x97\xE5\x8F\xA3\xE9\x87\x87\xE9\x9B\x86\xE6\xA8\xA1\xE5\xBC\x8F\xE5\xB7\xB2\xE5\xBC\x80\xE5\x90\xAF"
-               L"\xEF\xBC\x9A\xE5\x9C\xA8\xE4\xBB\xBB\xE6\x84\x8F\xE7\xAA\x97\xE5\x8F\xA3\xE9\x87\x87\xE9\x9B\x86\xE5\xB7\xA5\xE5\x85\xB7\xE4\xB8\xAD\xE9\x80\x89\xE6\x8B\xA9 [Lilith.exe]: Lilith");
+        LogMsg(L">>> 窗口采集模式已开启：在任意窗口采集工具中选择 [Lilith.exe]: Lilith");
     } else {
-        // 原文：>>> 窗口采集模式已关闭：已恢复桌宠原生样式
-        LogMsg(L">>> \xE7\xAA\x97\xE5\x8F\xA3\xE9\x87\x87\xE9\x9B\x86\xE6\xA8\xA1\xE5\xBC\x8F\xE5\xB7\xB2\xE5\x85\xB3\xE9\x97\xAD"
-               L"\xEF\xBC\x9A\xE5\xB7\xB2\xE6\x81\xA2\xE5\xA4\x8D\xE6\xA1\x8C\xE5\xAE\xA0\xE5\x8E\x9F\xE7\x94\x9F\xE6\xA0\xB7\xE5\xBC\x8F");
+        LogMsg(L">>> 窗口采集模式已关闭：已恢复桌宠原生样式");
     }
 }
 
@@ -211,8 +202,7 @@ void WindowController::ApplyCaptureMode() {
     // 强制让 Explorer 在任务栏创建本窗口按钮
     AddTaskbarTab();
 
-    // 原文：捕获模式已应用
-    LogWindowState(L"\xE6\x8D\x95\xE8\x8E\xB7\xE6\xA8\xA1\xE5\xBC%8F%E5%B7%B2%E5%BA%94%E7%94%A8");
+    LogWindowState(L"捕获模式已应用");
 }
 
 void WindowController::RestoreOriginalMode() {
@@ -234,8 +224,7 @@ void WindowController::RestoreOriginalMode() {
                  SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
                  SWP_NOACTIVATE | SWP_FRAMECHANGED);
 
-    // 原文：已还原原始样式
-    LogWindowState(L"\xE5\xB7\xB2\xE8\xBF\x98\xE5\x8E\x9F\xE5\x8E\x9F\xE5\xA7\x8B\xE6\xA0\xB7\xE5\xBC\x8F");
+    LogWindowState(L"已还原原始样式");
 }
 
 void WindowController::AddTaskbarTab() {
@@ -247,15 +236,13 @@ void WindowController::AddTaskbarTab() {
                                       IID_ITaskbarList,
                                       reinterpret_cast<void**>(&taskbarList_));
         if (FAILED(hr) || !taskbarList_) {
-            // 原文：创建 ITaskbarList 失败
-        LogWarn(L"\xE5\x88\x9B\xE5\xBB\xBA ITaskbarList \xE5\xA4\xB1\xE8\xB4\xA5: 0x%08X", hr);
+        LogWarn(L"创建 ITaskbarList 失败: 0x%08X", hr);
             taskbarList_ = nullptr;
             return;
         }
         hr = taskbarList_->HrInit();
         if (FAILED(hr)) {
-            // 原文：ITaskbarList::HrInit 失败
-        LogWarn(L"ITaskbarList::HrInit \xE5\xA4\xB1\xE8\xB4\xA5: 0x%08X", hr);
+        LogWarn(L"ITaskbarList::HrInit 失败: 0x%08X", hr);
         }
     }
 
@@ -269,7 +256,7 @@ void WindowController::AddTaskbarTab() {
         }
         Sleep(500);
     }
-    LogWarn(L"AddTaskbarTab \xE9\x87%8D\xE8%AF\x95 %d \xE6%AC%A1\xE4%BB%8D\xE5%A4%B1\xE8%B4%A5",
+    LogWarn(L"AddTaskbarTab 重试 %d 次仍失败",
             kMaxTries);
 }
 
@@ -286,7 +273,7 @@ void WindowController::RemoveTaskbarTab() {
         }
         Sleep(300);
     }
-    LogWarn(L"RemoveTaskbarTab \xE9\x87%8D\xE8%AF\x95\xE5%A4%B1\xE8%B4%A5");
+    LogWarn(L"RemoveTaskbarTab 重试失败");
 }
 
 void WindowController::Shutdown() {

@@ -21,7 +21,7 @@ volatile LONG g_stopRequested = 0;
 
 DWORD WINAPI WorkerThread(LPVOID) {
     LogInit(g_logCallback);
-    LogMsg(L"LilithWindowCapture v1.0.0 \xE5\xB7\xB2\xE5\x8A\xA0\xE8\xBD\xBD\xEF\xBC\x88\xE6\x97\xA5\xE5\xBF\x97\xE8\xBD\xAC\xE5\x8F\x91\xE8\x87\xB3 BepInEx\xEF\xBC\x89");
+    LogMsg(L"LilithWindowCapture v1.0.0 已加载（日志转发至 BepInEx）");
 
     WindowController controller;
     WindowControllerAccessor::SetInstance(&controller);
@@ -36,7 +36,7 @@ DWORD WINAPI WorkerThread(LPVOID) {
         Sleep(kWaitStepMs);
         waited += kWaitStepMs;
         if (waited >= 60000) {
-            LogWarn(L"\xE7\xAD\x89\xE5\xBE\x85 60 \xE7\xA7\x92\xE4\xBB\x8D\xE6\x9C\xAA\xE6\x89\xBE\xE5\x88\xB0\xE6\xB8\xB8\xE6\x88\x8F\xE7\xAA\x97\xE5\x8F\xA3");
+            LogWarn(L"等待 60 秒仍未找到游戏窗口");
             break;
         }
     }
@@ -56,7 +56,7 @@ DWORD WINAPI WorkerThread(LPVOID) {
 
     controller.Shutdown();
     WindowControllerAccessor::SetInstance(nullptr);
-    LogMsg(L"Mod \xE5\xB7\xB2\xE5\x8D\xB8\xE8\xBD\xBD");
+    LogMsg(L"Mod 已卸载");
     LogShutdown();
     return 0;
 }
