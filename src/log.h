@@ -8,7 +8,7 @@ namespace lilithwindowcapture {
 // 签名为 (level, message)，level 为 "INFO"/"WARN"/"DEBUG"。
 using LogCallback = void (*)(const wchar_t* level, const wchar_t* message);
 
-// 注册日志回调；不注册时日志仍通过 OutputDebugString 输出到调试器。
+// 注册日志回调；不注册时日志将被丢弃。
 void LogInit(LogCallback callback);
 void LogShutdown();
 

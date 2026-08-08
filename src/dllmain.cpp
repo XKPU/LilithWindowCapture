@@ -100,7 +100,7 @@ __declspec(dllexport) int LilithWindowCapture_IsReady() {
 // 由 BepInEx 托管插件注册日志回调，把本机日志转发到 BepInEx 日志。
 __declspec(dllexport) void LilithWindowCapture_SetLogCallback(LogCallback callback) {
     g_logCallback = callback;
-    // 关键：把回调同步给 log.cpp 内部的 g_callback，否则 LogMsg 永远只走 OutputDebugString
+    // 关键：把回调同步给 log.cpp 内部的 g_callback，否则 LogMsg 因 g_callback 为空而丢弃日志
     LogInit(callback);
 }
 

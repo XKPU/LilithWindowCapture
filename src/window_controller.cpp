@@ -194,7 +194,7 @@ void WindowController::SetCaptureMode(bool enabled) {
 void WindowController::ApplyCaptureMode() {
     LONG_PTR exStyle = GetWindowLongPtrW(hwnd_, GWL_EXSTYLE);
 
-    // 核心：去掉 TOOLWINDOW，OBS 才能在窗口列表里看到它
+    // 核心：去掉 TOOLWINDOW，任意窗口采集工具才能在窗口列表里枚举到它
     exStyle &= ~static_cast<LONG_PTR>(WS_EX_TOOLWINDOW);
 
     // 显式加 APPWINDOW：Explorer 只为"无 owner 且带 APPWINDOW 的顶层窗口"建任务栏按钮。

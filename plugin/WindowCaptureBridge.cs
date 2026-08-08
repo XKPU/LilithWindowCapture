@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using BepInEx.Logging;
 
@@ -29,7 +28,7 @@ namespace LilithWindowCapture
         [DllImport(DllName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "LilithWindowCapture_SetLogCallback")]
         public static extern void LilithWindowCapture_SetLogCallback(NativeLogCallback callback);
 
-        public static bool IsReady => LilithCapture_IsReady() != 0;
+        public static bool IsReady => LilithWindowCapture_IsReady() != 0;
 
         public static bool CaptureMode
         {

@@ -1,7 +1,5 @@
 using System;
-using System.Threading;
 using BepInEx.Logging;
-using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes;
 
 namespace LilithWindowCapture
