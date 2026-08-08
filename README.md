@@ -36,3 +36,5 @@ C# 侧通过 `[DllImport("winmm")]` 调用 C++ 导出的 `LilithWindowCapture_*`
 兼容其他模组？
 
 对于所有未修改winmm.dll的模组都可以兼容，任意模组修改winmm.dll都会导致冲突，需要兼容请提issues
+
+若目标修改了winhttp.dll，请使用目标模组的winhttp.dll。判断修改？对比该SHA256：8c6cdbc38836dee87e3368f5de1994d7c0ccebf29e4ce7aba3c0981f9375412c，大多数模组不会修改该DLL文件
