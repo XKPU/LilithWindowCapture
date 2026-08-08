@@ -85,4 +85,4 @@ $env:VCVARS64 = "Path"
 
 - 本项目以 `winmm.dll` 作为加载入口。若其他 mod 同样替换 `winmm.dll` 则为冲突。
 
-如遇问题，欢迎通过 Issue 反馈。
+### 如遇问题，请通过 Issue 反馈。
