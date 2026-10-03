@@ -89,3 +89,15 @@ $env:VCVARS64 = "Path"
 
 - 本项目以 `winmm.dll` 作为加载入口。若其他 mod 同样替换 `winmm.dll` 则为冲突。
 - 如遇问题，请通过 Issue 反馈。
+
+## 许可证
+```
+LilithWindowCapture - A hijacking DLL that allows OBS Window Capture to capture the window titled "The NOexistenceN of Lilith".  
+Copyright (C) 2026  K_PU
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+```

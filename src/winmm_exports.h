@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2026 K_PU
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
 // AUTO-GENERATED - do not edit by hand
 //
 // 运行时由 dllmain.cpp 把每个 stub 的函数体 patch 成跳板，转发到
